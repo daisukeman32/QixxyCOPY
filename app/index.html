@@ -42,11 +42,61 @@
       font-size: 24px;
       color: #0ff;
     }
+    .game-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 960px;
+      height: 720px;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: monospace;
+    }
+    .overlay-title {
+      font-size: 48px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .overlay-subtitle {
+      font-size: 20px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .retry-button {
+      background: #0ff;
+      color: #000;
+      border: none;
+      padding: 15px 30px;
+      font-size: 20px;
+      font-family: monospace;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+    .retry-button:hover {
+      background: #088;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
   <div id="game-container">
-    <canvas id="game-canvas" width="960" height="720"></canvas>
+    <div style="position: relative;">
+      <canvas id="game-canvas" width="960" height="720"></canvas>
+      <div id="game-over-overlay" class="game-overlay">
+        <div class="overlay-title" style="color: #ff0000;">GAME OVER</div>
+        <div class="overlay-subtitle">Better luck next time!</div>
+        <button class="retry-button" onclick="window.game.restart()">RETRY</button>
+      </div>
+      <div id="stage-clear-overlay" class="game-overlay">
+        <div class="overlay-title" style="color: #00ff00;">STAGE CLEAR!</div>
+        <div class="overlay-subtitle">Congratulations!</div>
+        <button class="retry-button" onclick="window.game.restart()">PLAY AGAIN</button>
+      </div>
+    </div>
     <div id="ui-panel">
       <div class="ui-section">
         <div class="ui-label">SCORE</div>
@@ -63,6 +113,14 @@
       <div class="ui-section">
         <div class="ui-label">LIVES</div>
         <div class="ui-value" id="lives">3</div>
+      </div>
+      <div class="ui-section">
+        <div class="ui-label">CONTROLS</div>
+        <div style="font-size: 12px; color: #088; line-height: 1.4;">
+          Arrow Keys: Move<br>
+          Space: Fast Draw<br>
+          Shift: Slow Draw
+        </div>
       </div>
     </div>
   </div>

@@ -233,21 +233,19 @@ class Game {
     this.qix.render(this.ctx);
     this.sparks.forEach(spark => spark.render(this.ctx));
 
-    // Render game state overlay
+    // Show/hide overlays based on game state
+    const gameOverOverlay = document.getElementById('game-over-overlay') as HTMLElement;
+    const stageClearOverlay = document.getElementById('stage-clear-overlay') as HTMLElement;
+
     if (this.gameState === GameState.GAME_OVER) {
-      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      this.ctx.fillRect(0, 0, this.config.fieldWidth, this.config.fieldHeight);
-      this.ctx.fillStyle = '#ff0000';
-      this.ctx.font = '48px monospace';
-      this.ctx.textAlign = 'center';
-      this.ctx.fillText('GAME OVER', this.config.fieldWidth / 2, this.config.fieldHeight / 2);
+      gameOverOverlay.style.display = 'flex';
+      stageClearOverlay.style.display = 'none';
     } else if (this.gameState === GameState.STAGE_CLEAR) {
-      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      this.ctx.fillRect(0, 0, this.config.fieldWidth, this.config.fieldHeight);
-      this.ctx.fillStyle = '#00ff00';
-      this.ctx.font = '48px monospace';
-      this.ctx.textAlign = 'center';
-      this.ctx.fillText('STAGE CLEAR!', this.config.fieldWidth / 2, this.config.fieldHeight / 2);
+      gameOverOverlay.style.display = 'none';
+      stageClearOverlay.style.display = 'flex';
+    } else {
+      gameOverOverlay.style.display = 'none';
+      stageClearOverlay.style.display = 'none';
     }
   }
 
@@ -260,9 +258,46 @@ class Game {
 
     requestAnimationFrame(this.gameLoop);
   }
+
+  restart() {
+    // Reset game state
+    this.gameState = GameState.PLAYING;
+    this.score = 0;
+    this.lives = 3;
+
+    // Reset field
+    this.field = new GameField(this.config.fieldWidth, this.config.fieldHeight);
+
+    // Reset player
+    const startPos = { x: this.config.fieldWidth / 2, y: 10 };
+    this.player.reset(startPos);
+
+    // Reset qix
+    const qixStart = {
+      x: this.config.fieldWidth / 2,
+      y: this.config.fieldHeight / 2
+    };
+    this.qix.position = { ...qixStart };
+    this.qix.targetPosition = { ...qixStart };
+
+    // Reset sparks
+    this.sparks.forEach(spark => {
+      spark.setPath(this.field.getCurrentAreaBorders());
+    });
+
+    // Update UI
+    this.updateUI();
+  }
+}
+
+// Make game instance globally accessible for restart button
+declare global {
+  interface Window {
+    game: Game;
+  }
 }
 
 // Start the game when the window loads
 window.addEventListener('load', () => {
-  new Game();
+  window.game = new Game();
 });
