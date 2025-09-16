@@ -18,10 +18,10 @@ class Game {
     fieldWidth: 960,
     fieldHeight: 720,
     targetAreaPercentage: 75,
-    playerSpeed: 150,
-    playerSlowSpeed: 50,
-    qixSpeed: 100,
-    sparkSpeed: 180,
+    playerSpeed: 120,
+    playerSlowSpeed: 40,
+    qixSpeed: 60,
+    sparkSpeed: 100,
     lives: 3
   };
 
@@ -134,7 +134,7 @@ class Game {
             this.player.trail,
             this.qix.position
           );
-          this.score += Math.floor(scoreGained * 10);
+          this.score += Math.floor(scoreGained * 0.1);
           this.player.stopDrawing();
 
           // Update spark paths
@@ -151,8 +151,9 @@ class Game {
   private checkCollisions() {
     if (this.gameState !== GameState.PLAYING) return;
 
-    // Check if Qix hits player's trail
+    // Qix ONLY attacks when player is drawing (in danger zone)
     if (this.player.isDrawing()) {
+      // Check if Qix hits player's trail
       for (const point of this.player.trail) {
         if (this.qix.checkCollision(point)) {
           this.loseLife();
@@ -167,7 +168,7 @@ class Game {
       }
     }
 
-    // Check spark collisions
+    // Sparks can ALWAYS hit player (even on border) - this is correct Qixxy behavior
     for (const spark of this.sparks) {
       if (spark.checkCollision(this.player.position)) {
         this.loseLife();
