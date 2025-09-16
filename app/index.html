@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>QixxyCOPY</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #game-container {
+      display: flex;
+      width: 1280px;
+      height: 720px;
+    }
+    #game-canvas {
+      background: #111;
+      border: 2px solid #0ff;
+    }
+    #ui-panel {
+      width: 320px;
+      background: #222;
+      color: #0ff;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 18px;
+    }
+    .ui-section {
+      margin-bottom: 30px;
+    }
+    .ui-label {
+      color: #088;
+      margin-bottom: 5px;
+    }
+    .ui-value {
+      font-size: 24px;
+      color: #0ff;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas" width="960" height="720"></canvas>
+    <div id="ui-panel">
+      <div class="ui-section">
+        <div class="ui-label">SCORE</div>
+        <div class="ui-value" id="score">0</div>
+      </div>
+      <div class="ui-section">
+        <div class="ui-label">AREA</div>
+        <div class="ui-value" id="area">0% / 75%</div>
+      </div>
+      <div class="ui-section">
+        <div class="ui-label">TIME</div>
+        <div class="ui-value" id="time">00:00</div>
+      </div>
+      <div class="ui-section">
+        <div class="ui-label">LIVES</div>
+        <div class="ui-value" id="lives">3</div>
+      </div>
+    </div>
+  </div>
+  <script src="dist/renderer/game.bundle.js"></script>
+</body>
+</html>
