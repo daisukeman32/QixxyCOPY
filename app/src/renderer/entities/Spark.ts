@@ -65,19 +65,27 @@ export class Spark {
   }
 
   checkCollision(point: Vector2): boolean {
+    if (!this.active) return false;
+
     const dx = point.x - this.position.x;
     const dy = point.y - this.position.y;
     return Math.sqrt(dx * dx + dy * dy) < this.size;
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    if (!this.active) return;
-
+    // Always render sparks (even inactive ones) for debugging initially
     // Draw spark as a pulsing circle
     const pulse = Math.sin(Date.now() * 0.01) * 0.2 + 0.8;
-    ctx.fillStyle = '#ffaa00';
-    ctx.shadowColor = '#ff6600';
-    ctx.shadowBlur = 10 * pulse;
+
+    if (this.active) {
+      ctx.fillStyle = '#ffaa00';
+      ctx.shadowColor = '#ff6600';
+      ctx.shadowBlur = 10 * pulse;
+    } else {
+      // Inactive sparks are dimmed
+      ctx.fillStyle = '#666666';
+      ctx.shadowBlur = 0;
+    }
 
     ctx.beginPath();
     ctx.arc(this.position.x, this.position.y, this.size * pulse, 0, Math.PI * 2);

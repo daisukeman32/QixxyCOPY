@@ -1,4 +1,5 @@
 import { Vector2 } from '../types';
+import { GameField } from '../core/GameField';
 
 export class Qix {
   position: Vector2;
@@ -33,6 +34,48 @@ export class Qix {
       const ratio = Math.min(moveDistance / distance, 1);
       this.position.x += dx * ratio;
       this.position.y += dy * ratio;
+    }
+
+    // Update rotation for visual effect
+    this.rotation += delta * 2;
+  }
+
+  updateWithinArea(delta: number, currentAreaBorder: Vector2[], gameField: GameField) {
+    // If reached target, choose new random target
+    const dx = this.targetPosition.x - this.position.x;
+    const dy = this.targetPosition.y - this.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 5) {
+      // Choose new random target within current area (not in claimed areas)
+      let attempts = 0;
+      let newTarget: Vector2;
+      do {
+        newTarget = {
+          x: 50 + Math.random() * (960 - 100),
+          y: 50 + Math.random() * (720 - 100)
+        };
+        attempts++;
+      } while (attempts < 20 && (gameField.isPointInClaimedAreas(newTarget) || gameField.isPointOnBorder(newTarget, 30)));
+
+      this.targetPosition = newTarget;
+    }
+
+    // Move towards target
+    if (distance > 0) {
+      const moveDistance = this.speed * delta;
+      const ratio = Math.min(moveDistance / distance, 1);
+      const newX = this.position.x + dx * ratio;
+      const newY = this.position.y + dy * ratio;
+
+      // Check if new position would be in claimed area
+      if (!gameField.isPointInClaimedAreas({ x: newX, y: newY })) {
+        this.position.x = newX;
+        this.position.y = newY;
+      } else {
+        // Choose new target if current path leads to claimed area
+        this.targetPosition = { ...this.position };
+      }
     }
 
     // Update rotation for visual effect
